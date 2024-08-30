@@ -41,13 +41,13 @@ public class Hotel {
                     !(reservation.getCheckOutDate().before(existingReservation.getCheckInDate()) ||
                             reservation.getCheckInDate().after(existingReservation.getCheckOutDate()))) {
                 System.out.println("Room is not available for the requested period.");
-                return false;  // Room is not available
+                return false;
             }
         }
         // If available, add the reservation and book the room
         reservations.add(reservation);
         reservation.getRoom().bookRoom();
-        return true;
+        return false;
     }
 
     public void cancelReservation(int reservationId) {
@@ -74,5 +74,14 @@ public class Hotel {
 
     public int getNextReservationId() {
         return reservations.size() + 1;
+    }
+
+    public Reservation getReservationById(int reservationId) {
+        for (Reservation reservation : reservations) {
+            if (reservation.getReservationId() == reservationId) {
+                return reservation;
+            }
+        }
+        return null;  // Return null if not found
     }
 }
