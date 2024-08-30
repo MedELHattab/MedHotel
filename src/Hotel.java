@@ -14,13 +14,24 @@ public class Hotel {
         rooms.add(room);
     }
 
-    public Room findAvailableRoom() {
+    public List<Room> findAvailableRooms() {
+        List<Room> availableRooms = new ArrayList<>();
         for (Room room : rooms) {
             if (room.isAvailable()) {
+                availableRooms.add(room);  // Collect all available rooms
+            }
+        }
+        return availableRooms;  // Return the list of all available rooms
+    }
+
+
+    public Room findRoomById(int roomId) {
+        for (Room room : rooms) {
+            if (room.getRoomNumber() == roomId) {
                 return room;
             }
         }
-        return null;  // No available room
+        return null;  // No room found with the given ID
     }
 
     public boolean addReservation(Reservation reservation) {
@@ -59,5 +70,9 @@ public class Hotel {
                 System.out.println("Check-Out Date: " + reservation.getCheckOutDate());
             }
         }
+    }
+
+    public int getNextReservationId() {
+        return reservations.size() + 1;
     }
 }

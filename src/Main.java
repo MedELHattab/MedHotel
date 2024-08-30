@@ -1,51 +1,95 @@
 import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        // Create a Hotel instance
         Hotel hotel = new Hotel();
+        Scanner scanner = new Scanner(System.in);
 
-        // Create some Room objects and add them to the hotel
-        Room room101 = new Room(101);
-        Room room102 = new Room(102);
-        Room room103 = new Room(103);
+        while (true) {
+            // Display the menu
+            System.out.println("Hotel Management System");
+            System.out.println("1. Add Room");
+            System.out.println("2. View Available Room");
+            System.out.println("3. Create Reservation");
+            System.out.println("4. Cancel Reservation");
+            System.out.println("5. View Reservation Details");
+            System.out.println("6. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
 
-        hotel.addRoom(room101);
-        hotel.addRoom(room102);
-        hotel.addRoom(room103);
+            switch (choice) {
+                case 1:
+                    // Add Room
+                    System.out.print("Enter Room Number: ");
+                    int roomNumber = scanner.nextInt();
+                    Room room = new Room(roomNumber);
+                    hotel.addRoom(room);
+                    System.out.println("Room " + roomNumber + " added successfully.");
+                    break;
 
-        // Find an available room
-        Room availableRoom = hotel.findAvailableRoom();
-        if (availableRoom != null) {
-            System.out.println("Available Room Number: " + availableRoom.getRoomNumber());
-        } else {
-            System.out.println("No rooms are available.");
-        }
+                case 2:
+                    // View Available Rooms
+                    List<Room> availableRooms = hotel.findAvailableRooms();
+                    if (!availableRooms.isEmpty()) {  // Check if there are any available rooms
+                        System.out.println("Available Rooms:");
+                        for (Room rooms : availableRooms) {
+                            System.out.println("Room Number: " + rooms.getRoomNumber());
+                        }
+                    } else {
+                        System.out.println("No rooms are available.");
+                    }
+                    break;
 
-        // Create a Reservation
-        Date checkInDate = new Date();  // current date/time
-        Date checkOutDate = new Date(checkInDate.getTime() + 2 * 24 * 60 * 60 * 1000);  // 2 days later
 
-        Reservation reservation1 = new Reservation(1, "John Doe", availableRoom, checkInDate, checkOutDate);
+                case 3:
+                    // Create Reservation
+                    System.out.print("Enter Room Number for Reservation: ");
+                    int reserveRoomNumber = scanner.nextInt();
+                    Room selectedRoom = hotel.findRoomById(reserveRoomNumber);
 
-        Date checkInDate2 = new Date();  // current date/time
-        Date checkOutDate2 = new Date(checkInDate.getTime() + 2 * 24 * 60 * 60 * 1000);  // 2 days later
+                    if (selectedRoom != null && selectedRoom.isAvailable()) {
+                        System.out.print("Enter Guest Name: ");
+                        scanner.nextLine(); // consume the leftover newline
+                        String guestName = scanner.nextLine();
 
-        Reservation reservation2 = new Reservation(1, "John Doe", availableRoom, checkInDate2, checkOutDate2);
-        // Add the reservation to the hotel
-        hotel.addReservation(reservation1);
-        hotel.addReservation(reservation2);
-        // Retrieve reservation details
-        hotel.getReservationDetails(1);
-        hotel.getReservationDetails(2);
-        // Cancel the reservation
-        hotel.cancelReservation(1);
+                        Date checkInDate = new Date();  // current date/time
+                        Date checkOutDate = new Date(checkInDate.getTime() + 2 * 24 * 60 * 60 * 1000);  // 2 days later
 
-        // Check the room's availability again
-        if (availableRoom.isAvailable()) {
-            System.out.println("Room " + availableRoom.getRoomNumber() + " is now available.");
-        } else {
-            System.out.println("Room " + availableRoom.getRoomNumber() + " is still booked.");
+                        Reservation reservation = new Reservation(hotel.getNextReservationId(), guestName, selectedRoom, checkInDate, checkOutDate);
+                        hotel.addReservation(reservation);
+                        System.out.println("Reservation created successfully for Room " + reserveRoomNumber);
+                    } else {
+                        System.out.println("Room " + reserveRoomNumber + " is not available or does not exist.");
+                    }
+                    break;
+
+                case 4:
+                    // Cancel Reservation
+                    System.out.print("Enter Reservation ID to Cancel: ");
+                    int reservationId = scanner.nextInt();
+                    hotel.cancelReservation(reservationId);
+                    System.out.println("Reservation " + reservationId + " cancelled successfully.");
+                    break;
+
+                case 5:
+                    // View Reservation Details
+                    System.out.print("Enter Reservation ID to View: ");
+                    int viewReservationId = scanner.nextInt();
+                    hotel.getReservationDetails(viewReservationId);
+                    break;
+
+                case 6:
+                    // Exit
+                    System.out.println("Exiting the system. Goodbye!");
+                    scanner.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
         }
     }
 }
