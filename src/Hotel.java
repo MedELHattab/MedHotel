@@ -23,15 +23,26 @@ public class Hotel {
         return null;  // No available room
     }
 
-    public void addReservation(Reservation reservation) {
+    public boolean addReservation(Reservation reservation) {
+        // Check if the room is available for the specified period
+        for (Reservation existingReservation : reservations) {
+            if (existingReservation.getRoom().equals(reservation.getRoom()) &&
+                    !(reservation.getCheckOutDate().before(existingReservation.getCheckInDate()) ||
+                            reservation.getCheckInDate().after(existingReservation.getCheckOutDate()))) {
+                System.out.println("Room is not available for the requested period.");
+                return false;  // Room is not available
+            }
+        }
+        // If available, add the reservation and book the room
         reservations.add(reservation);
         reservation.getRoom().bookRoom();
+        return true;
     }
 
     public void cancelReservation(int reservationId) {
         for (Reservation reservation : reservations) {
             if (reservation.getReservationId() == reservationId) {
-                reservation.cancelReservation();
+                reservation.getRoom().releaseRoom();
                 reservations.remove(reservation);
                 break;
             }

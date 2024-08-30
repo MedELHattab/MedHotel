@@ -28,12 +28,16 @@ public class Main {
 
         Reservation reservation1 = new Reservation(1, "John Doe", availableRoom, checkInDate, checkOutDate);
 
+        Date checkInDate2 = new Date();  // current date/time
+        Date checkOutDate2 = new Date(checkInDate.getTime() + 2 * 24 * 60 * 60 * 1000);  // 2 days later
+
+        Reservation reservation2 = new Reservation(1, "John Doe", availableRoom, checkInDate2, checkOutDate2);
         // Add the reservation to the hotel
         hotel.addReservation(reservation1);
-
+        hotel.addReservation(reservation2);
         // Retrieve reservation details
         hotel.getReservationDetails(1);
-
+        hotel.getReservationDetails(2);
         // Cancel the reservation
         hotel.cancelReservation(1);
 
